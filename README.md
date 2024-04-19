@@ -1,3 +1,11 @@
+## Changes to original repository
+***This repository contains a change to the GCC version that is used for building in see_core/CMakeLists.txt,
+as well as additional dependencies. Further, liblemon-dev is no longer available on official Ubuntu 20.04
+repositories and thus the debian package is included here, too.***
+
+==============================================================================
+
+
 Surface Edge Explorer (SEE++)
 ==============================================================================
 
@@ -9,7 +17,9 @@ scene observations.
 ## Installation
 
 - Install Dependencies
-  - sudo apt install libnlopt-dev liblemon-dev
+  - sudo apt install libnlopt-dev libnlopt-cxx-dev libglpk40
+  - sudo dpkg -i liblemon1.3.1_1.3.1+dfsg-1_amd64.deb
+  - sudo dpkg -i liblemon-dev_1.3.1+dfsg-1_amd64.deb
 - Install ROS Noetic (includes PCL)
   - http://wiki.ros.org/noetic/Installation/Ubuntu (use full desktop install)
 - Clone SEE into your catkin workspace
