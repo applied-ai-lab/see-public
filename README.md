@@ -2,7 +2,7 @@
 ***This repository contains a change to the GCC version that is used for building in see_core/CMakeLists.txt,
 as well as additional dependencies. Further, liblemon-dev is no longer available on official Ubuntu 20.04
 repositories and thus the debian package is included here, too. This debian package is from Ubuntu 18.04, 
-so if something breaks, it may not come at a surprise.***
+so if something breaks, it may not come as a surprise.***
 
 ==============================================================================
 
