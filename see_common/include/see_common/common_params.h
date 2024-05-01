@@ -57,6 +57,7 @@ void LoadSensorParams(SensorParams &sensor) {
   param<std::string>("/see/sensor/world_frame", sensor.world_frame, "world");
   param<std::vector<float>>("/see/sensor/bounds", sensor.bounds,
                             std::vector<float>());
+  param<std::string>("/see/sensor/nbv_frame", sensor.nbv_frame, "nbv");
 }
 
 #endif // COMMON_PARAMS_H

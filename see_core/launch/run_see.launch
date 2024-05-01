@@ -1,15 +1,24 @@
 <launch>
 
   <include file="$(find see_common)/launch/see_common.launch">
+    <arg name="done" default="false"/>
+    <arg name="ready" default="true"/>
+    <arg name="sim_ready" default="false"/>
+    <arg name="use_rviz" default="true"/>
+    <arg name="use_moveit" default="false"/>
+    <arg name="use_receipts" default="false"/>
+    <arg name="use_constraints" default="false"/>   
     <arg name="fps" value="30"/>
     <arg name="f_axis" value="0"/>
-    <arg name="pix_x" value="848"/>
-    <arg name="pix_y" value="480"/>
+    <arg name="pix_x" value="720"/>
+    <arg name="pix_y" value="1080"/>
     <arg name="fov_x" value="69.4"/>
     <arg name="fov_y" value="42.5"/>
-    <arg name="world_frame" value="world"/>
-    <arg name="sensor_frame" value="sensor"/>
-    <arg name="sen_pts_topic" value="sen_pts"/>
+    <arg name="world_frame" value="base_link"/>
+    <arg name="sensor_frame" value="right_kinova_arm_camera_depth_frame"/>
+    <arg name="nbv_frame" value="nbv_frame"/>
+    <arg name="sen_pts_topic" value="right_arm_camera/depth/points"/>
+    <arg name="bounds" default="[-30.0, -30.0, -30.0, 30.0, 30.0, 30.0]"/>
   </include>
 
   <include file="$(find see_core)/launch/see_main.launch">

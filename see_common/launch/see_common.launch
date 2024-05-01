@@ -19,6 +19,7 @@
   <arg name="noise" default="0.01"/>
   <arg name="world_frame" default="world"/>
   <arg name="sensor_frame" default="sensor"/>
+  <arg name="nbv_frame" default="nbv_frame"/>
   <arg name="bounds" default="[-0.45,-0.45,0.01,0.45,0.45,0.65]"/>
 
   <param name="/see/view_num" value="0"/>
@@ -48,6 +49,7 @@
   <param name="/see/sensor/noise" value="$(arg noise)"/>
   <param name="/see/sensor/world_frame" value="$(arg world_frame)"/>
   <param name="/see/sensor/sensor_frame" value="$(arg sensor_frame)"/>
+  <param name="/see/sensor/nbv_frame" value="$(arg nbv_frame)"/>
   <rosparam param="/see/sensor/bounds" subst_value="True">$(arg bounds)</rosparam>
 
 </launch>

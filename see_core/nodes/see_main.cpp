@@ -107,6 +107,7 @@ void SeeMain(ros::NodeHandle &n) {
   SeeCloudPublisherSPtr cloud_pub(new SeeCloudPublisher(n, topics.see_pts));
   SenCloudSubscriberSPtr cloud_sub(
       new SenCloudSubscriber(n, topics.sen_pts, sensor_params));
+  SenViewBroadcasterSPtr view_broad(new SenViewBroadcaster(sensor_params));
 
   PublishParams(core);
   while (!CheckParam("/see/ready", true)) {
@@ -119,14 +120,38 @@ void SeeMain(ros::NodeHandle &n) {
   while (ros::ok() && !core->IsDone()) {
     SeePointCloudPtr cloud(new pcl::PointCloud<SeePoint>);
 
+    std::cout << "Cloud length, line 122: " << cloud->size() << std::endl;
+
     if (ReachedNBV(cloud_sub->view, core->GetNBV(), nbv_params, first_view)) {
 
       ROS_INFO_STREAM("Capturing view");
       while (!cloud_sub->GetViewandCloud(cloud, view)) {
         ros::spinOnce();
       }
+      
+      //std::cout << "Cloud length, line 131: " << cloud->size() << std::endl;
+
       ApplyBoundingBox(cloud, sensor_params);
       ROS_INFO_STREAM("New View Obtained");
+
+      //std::cout << "Cloud length, line 136: " << cloud->size() << std::endl;
+      //std::cout << "View, line 137: " << view.getVector3fMap().transpose() << std::endl;
+      //std::cout << "View, orietati: " << view.getViewVector3fMap().transpose() << std::endl;
+
+      //Eigen::Vector3f axis(0, 0, 0);
+      // For a camera axis of z for instance
+      //int f_axis = 2;
+      //axis(f_axis) = 1;
+      //auto quaternion = Eigen::Quaternionf::FromTwoVectors(axis, view.getViewVector3fMap());
+      //Eigen::Matrix3f rotMat = quaternion.toRotationMatrix(); 
+
+      // Visualise the quaternion
+      //std::cout << "View, quat   : " << quaternion.x() << ", " 
+      //                               << quaternion.y() << ", " 
+      //                               << quaternion.z() << ", "
+      //                               << quaternion.w() << std::endl; 
+
+      //std::cout << "View, rot mat: " << rotMat << std::endl;
 
       ROS_INFO_STREAM("Updating Pointcloud");
       auto t1 = high_resolution_clock::now();
@@ -134,12 +159,19 @@ void SeeMain(ros::NodeHandle &n) {
       auto t2 = high_resolution_clock::now();
       auto ts = duration_cast<std::chrono::duration<float>>(t2 - t1);
 
+      //std::cout << "Cloud length, line 144: " << cloud->size() << std::endl;
+
       PublishMetrics(core, ts.count());
       ros::spinOnce();
+      
+      //std::cout << "View, line 166: " << core->GetNBV().getVector3fMap().transpose() << std::endl;
+      auto nbv = core->GetNBV();
+      view_broad->PublishView(nbv);
 
       view_pub->SendMessage(core->GetNBV(), core->GetViewNum());
       ros::spinOnce();
 
+      // Publish cumulative point cloud so far
       while (cloud_num < core->GetViewNum()) {
         cloud_pub->SendMessage(core->GetPointCloud());
         ros::spinOnce();
@@ -150,14 +182,19 @@ void SeeMain(ros::NodeHandle &n) {
         }
       }
 
+      // Check validity of next best view. Resample if necessary
       if (ext_params.use_constraints) {
         SetParam("/see/nbv_valid", false);
         while (!CheckParam("/see/nbv_valid", true) && !core->IsDone()) {
+          ROS_INFO_STREAM("Checking NBV validity");
           ros::spinOnce();
           if (view_sub->GetView(nbv)) {
+            ROS_INFO_STREAM("Resampling NBV");
             core->UpdateNBV(nbv);
             PublishMetrics(core, ts.count());
             view_pub->SendMessage(core->GetNBV(), core->GetViewNum());
+            auto nbv = core->GetNBV();
+            view_broad->PublishView(nbv);
             ros::spinOnce();
           }
         }

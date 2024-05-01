@@ -426,7 +426,8 @@ struct SenViewBroadcaster {
     tf::transformEigenToTF(tf_affine.cast<double>(), transform);
 
     tf::StampedTransform st(transform, ros::Time::now(), s_p.world_frame,
-                            s_p.sensor_frame);
+                            s_p.nbv_frame);
+    ROS_INFO_STREAM("Broadcasting View");
     tf_tb.sendTransform(st);
   }
 };

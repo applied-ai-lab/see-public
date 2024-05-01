@@ -56,6 +56,7 @@ struct SensorParams {
   std::string sensor_frame;  /*!< Frame for sensor */
   std::string world_frame;   /*!< World frame for the sensor */
   std::vector<float> bounds; /*!< Bounding box for scene */
+  std::string nbv_frame; /*!< Frame for nbv */
 };
 
 #endif // COMMON_STRUCTS_H
